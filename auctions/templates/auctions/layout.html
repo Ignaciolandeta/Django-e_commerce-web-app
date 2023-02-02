@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}DeRematee.com!{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'auctions/styles.css' %}" >
+    </head>
+    <body>
+        <!-- messages notifications if any -->
+        {% if messages %}
+            {% for message in messages %}
+            <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </p>
+            {% endfor %}
+        {% endif %}
+        
+        <h1>Welcome to "DeRematee.com", best Auctions website!</h1>
+        <!-- My personal logo styling touch... -->
+        <img src="https://th.bing.com/th/id/R.8f3bdf4ac81628fec905510c027cb177?rik=d4rY0%2ftBeBeotw&amp;riu=http%3a%2f%2f2.bp.blogspot.com%2f_rR-CvyNo8Zc%2fTIMOOwK1cWI%2fAAAAAAAAABo%2fCa8lyUx-nv8%2fs1600%2fderemate.gif&amp;ehk=vpzp5Vl3ZGvM%2fYUQwAKVrpd%2fDJCcTHeGzxS2g97YNQw%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0">
+        <div class="authentication-message">
+            {% if user.is_authenticated %}
+                Signed in as <strong>{{ user.username }}</strong>. Hello <strong>{{ user.username }}</strong> !, welcome and have a good shopping experience, we hope you make a good deal !
+            {% else %}
+                You are Not signed in yet, please LogIn !.
+            {% endif %}
+        
+        <!-- Layout sections/pages -->
+        </div>
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'listing-categories' %}">Categories</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'create-listing' %}">Create Listing</a>
+            </li>
+
+            <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                </li>
+            {% endif %}
+        </ul>
+        <hr>
+        {% block body %}
+        {% endblock %}
+    </body>
+
+</html>

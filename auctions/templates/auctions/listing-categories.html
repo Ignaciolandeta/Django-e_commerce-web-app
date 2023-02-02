@@ -1,0 +1,17 @@
+<!-- Categories: Users should be able to visit a page that displays a list of all listing categories. (e.g. Fashion, Toys, Electronics, Home, etc.).
+    Clicking on the name of any category should take the user to a page that displays all of the active listings in that category. -->
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    <h2>Available auctions category list</h2>
+    <ul>
+        {% for category in categories %}
+            <!-- Clicking on the name of any category should take the user to a page that displays all of the active listings in that category. -->
+            <li><a href="{% url 'category' category %}">{{ category }}</a></li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}

@@ -1,0 +1,30 @@
+<!-- Watchlist: Users who are signed in should be able to visit a Watchlist page, 
+    which should display all of the listings that a user has added to their watchlist. 
+    Clicking on any of those listings should take the user to that listing’s page. -->
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Your items Watchlist</h2>
+
+        {% for listing in watchlist %}
+        <div class="row-listing-container">       
+            <div class="col-md-1">
+                <img src="{{ listing.photo }}" alt="{{ listing.title }} photo" class="img-small">
+            </div>
+            <div class="col-md-10">
+                <h3><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h3>
+                <h4>{{ listing.price }}</h4>
+                <p>Item description: {{ listing.description }}</p>
+                <p>Item listed by user: {{ listing.user.username }}</p>
+                <p>Item listed on date: {{ listing.date }}</p>
+            </div>
+        </div>
+        <hr>
+        {% empty %}
+        <p>:/ mm looks like you dont have any items in your watchlist yet</p>
+        
+        {% endfor %}
+    
+
+{% endblock %}

@@ -1,0 +1,97 @@
+<!-- Listing Page: Clicking on a listing should take users to a page specific to that listing. 
+    On that page, users should be able to view all details about the listing, 
+    including the current price for the listing. -->
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <!-- If the user is signed in, the user should be able to add the item to their “Watchlist.” 
+        If the item is already on the watchlist, the user should be able to remove it -->
+    {% if user.is_authenticated %}
+        <form action="{% url 'add-remove-watchlist' listing.id %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="{{ watchlist_message }}" class="btn btn-sm btn primary watchlist-button">
+        </form>
+    {% endif %}
+    
+    <!-- On that page, users should be able to view all details about the listing_id, including Title and the current price for the listing. -->
+    <h2>{{ listing.title }}</h2>
+
+    <div class="row listing-container">
+        <div class="col-md-3">
+            <img src="{{ listing.photo }}" alt="{{ listing.title }} photo" class="img-small">
+        </div>
+        <div class="col-md-9">
+            <h3>${{ listing.price }}</h3>
+            <!-- If the user is signed in and is the one who created the listing, 
+                the user should have the ability to “close” the auction from this page ('Close Auction'), 
+                which makes the highest bidder the winner of the auction and makes the listing no longer active -->
+            {% if user_is_creator and listing.status %}
+            <form action="{% url 'close-listing' listing.id %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Close Auction at high bid">
+            </form>
+            {% endif %}
+            
+            <!-- If a user is signed in on a closed listing page, and the user has won that auction, the page should say so -->
+            {% if max_bid.bidder == user and not listing.status %}
+                <h4>Congratulations! The auction is closed and you WON it!</h4>
+            {% elif max_bid and not listing.status %}
+                <h4>The auction winner is: {{ max_bid.bidder.username }}</h4>
+            {% elif not max_bid and not listing.status %}
+                <h4>Sorry, the auction is already closed</h4>
+            {% endif %}
+
+            <p>{{ listing.description }}</p>
+            <p>Listed on date: {{ listing.date }}</p>
+            <p>Listed by user: {{ listing.user.username }}</p>
+        </div>
+    </div>
+
+    <!-- If the user is signed in, the user should be able to bid on the item. 
+        The bid must be at least as large as the starting bid, 
+        and must be greater than any other bids that have been placed (if any). 
+        If the bid doesn’t meet those criteria, the user should be presented with an error. -->
+    {% if user.is_authenticated %}
+    
+        {% if listing.status and not user_is_creator %}
+            <h3>You can still Bid on this item! Good luck</h3>
+            <form action="{% url 'bid' listing.id %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="number" requeried name="price" step="0.01" class="form-control" placeholder="Please enter your Bid here">
+                </div>
+                <input type="submit" value="Submit your Bid" class="btn btn-sm btn-primary">
+            </form>
+        {% endif %}
+    
+
+        <!-- Users who are signed in should be able to add comments to the listing page. -->
+        <h3>Add a comment to this bid:</h3>
+        <div class="comment-section">
+            <form action="{% url 'comment' listing.id %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" required name="comment_text" class="form-control" placeholder="Add your comment here">
+                </div>
+                <input type="submit" class="btn btn-sm btn-primary">
+            </form>
+
+        <!-- The listing page should display all comments that have been made on the listing. -->
+        <h3>All comments made on this item:</h3>
+        <ul>
+        {% for comment in comments %}
+            <li class="comment">
+                Bidder {{ comment.user.username }} on date {{ comment.date }} comment:
+                <br>
+                {{ comment.comment }}
+            </li>
+        {% endfor %}
+        </ul>       
+        </div>
+
+    {% endif %}
+
+
+
+{% endblock %}

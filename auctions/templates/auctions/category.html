@@ -1,0 +1,28 @@
+<!-- Clicking on the name of any category should take the user to a page that displays all of the active listings in that category. -->
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Items list in category '{{ category }}':</h2>
+
+        {% for listing in listings %}
+        <div class="row listing-container">
+            <div class="col-md-3">
+                <img src="{{ listing.photo }}" alt="{{ listing.title }} photo" class="img-small">
+            </div>
+            <div class="col-md-5">
+                <h3><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h3>
+                <h4>${{ listing.price }}</h4>
+                <p>Item description: {{ listing.description }}</p>
+                <p>Item listed by user: {{ listing.user.username }}</p>
+                <p>Item listed on date: {{ listing.date }}</p>                
+
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+
+
+
+{% endblock %}
